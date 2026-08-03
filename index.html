@@ -154,6 +154,7 @@
         .header-actions {
             display: flex;
             gap: 8px;
+            align-items: center;
         }
 
         .btn-top {
@@ -176,6 +177,22 @@
             font-weight: 600;
             font-size: 13px;
             cursor: pointer;
+        }
+
+        .btn-logout {
+            background: var(--danger-color);
+            color: #fff;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .btn-logout:hover {
+            background: #dc2626;
         }
 
         .section-title {
@@ -339,11 +356,10 @@
 <!-- Login Modal -->
 <div id="loginOverlay">
     <div class="login-box">
-        <h2>🔒 Authorization Required</h2>
-        <p>অ্যাপ্সে প্রবেশ করতে পাসওয়ার্ড দিন</p>
-        <input type="password" id="passInput" placeholder="Password দিন">
+        <h2>Admin</h2>
+        <input type="password" id="passInput" placeholder="Enter your password">
         <button onclick="checkPass()">Login</button>
-        <div id="loginError">⚠️ ভুল পাসওয়ার্ড! আবার চেষ্টা করুন।</div>
+        <div id="loginError">worng password</div>
     </div>
 </div>
 
@@ -353,7 +369,7 @@
 <div class="modal-overlay" id="historyModal">
     <div class="modal-box">
         <div class="modal-header">
-            <div class="modal-title">📜 Transaction History</div>
+            <div class="modal-title">Transaction History</div>
             <button class="close-modal" onclick="closeHistory()">✕</button>
         </div>
         <ul class="history-list" id="historyContent"></ul>
@@ -385,6 +401,7 @@
         <div class="header-actions">
             <button class="btn-import" onclick="runManualImport()">📥 Import Data</button>
             <button class="btn-top" onclick="openAddModal()">Add Member</button>
+            <button class="btn-logout" onclick="logout()">🚪 Logout</button>
         </div>
     </div>
 
@@ -401,9 +418,19 @@
             document.getElementById('loginOverlay').style.display = 'none';
             document.getElementById('mainApp').style.display = 'block';
             sessionStorage.setItem('isLoggedIn', 'true'); // ব্রাউজারের সেশনে সেভ থাকবে
+            err.style.display = 'none';
+            document.getElementById('passInput').value = '';
         } else {
             err.style.display = 'block';
         }
+    }
+
+    // --- Logout Function ---
+    function logout() {
+        sessionStorage.removeItem('isLoggedIn'); // সেশন মুছে ফেলা
+        document.getElementById('mainApp').style.display = 'none';
+        document.getElementById('loginOverlay').style.display = 'flex';
+        document.getElementById('passInput').value = '';
     }
 
     // Enter কী চাপলে যাতে Login হয়ে যায়

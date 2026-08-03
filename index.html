@@ -87,17 +87,6 @@
             cursor: pointer;
         }
 
-        .btn-import {
-            background: #8b5cf6;
-            color: #fff;
-            border: none;
-            padding: 8px 14px;
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 13px;
-            cursor: pointer;
-        }
-
         .section-title {
             font-size: 13px;
             font-weight: 700;
@@ -292,7 +281,6 @@
     <div class="app-header">
         <div class="app-title"><div class="app-icon">🍴</div>Boys Hunts</div>
         <div class="header-actions">
-            <button class="btn-import" onclick="importImageData()" title="ছবির ডাটা অটো ইমপোর্ট">📥 Import Table Data</button>
             <button class="btn-top" onclick="openAddModal()">Add Member</button>
         </div>
     </div>
@@ -305,16 +293,15 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getFirestore, collection, onSnapshot, doc, setDoc, updateDoc, deleteDoc, writeBatch } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-    // Main Firebase Database Configuration
+    // New Firebase Configuration (boyshuntsacc)
     const firebaseConfig = {
-        apiKey: "AIzaSyC1wWWOu84tOHd1s5HhBrkGv5c1P2UqlqA",
-        authDomain: "boyshunts.firebaseapp.com",
-        databaseURL: "https://boyshunts-default-rtdb.firebaseio.com",
-        projectId: "boyshunts",
-        storageBucket: "boyshunts.firebasestorage.app",
-        messagingSenderId: "614876875448",
-        appId: "1:614876875448:web:b6d187fe1b5fd905bc024d",
-        measurementId: "G-H3CFH5LFLJ"
+        apiKey: "AIzaSyBUE4F4zf8WpDwwD9Fs-j6bj-e94y4wP0g",
+        authDomain: "boyshuntsacc.firebaseapp.com",
+        projectId: "boyshuntsacc",
+        storageBucket: "boyshuntsacc.firebasestorage.app",
+        messagingSenderId: "368406542860",
+        appId: "1:368406542860:web:2f53d10380ac6193d3cc29",
+        measurementId: "G-ZFXLVGFF6X"
     };
 
     const app = initializeApp(firebaseConfig);
@@ -323,7 +310,7 @@
 
     let membersData = [];
 
-    // Exact Table Data Extracted From The Provided Image
+    // Exact Initial Import Data from Table
     const imageTableData = [
         { name: "Bosir", total: 39.52, status: "পাবে", remark: "Mill Cost: 1710.48 | Bazar: 2630" },
         { name: "Nadim", total: 2796.41, status: "দিবে", remark: "Mill Cost: 5041.41 | Bazar: 3125" },
@@ -356,44 +343,42 @@
         setTimeout(() => { if (toast.parentNode) toast.parentNode.removeChild(toast); }, 3000);
     }
 
-    // Function to auto-populate members data from the image table
-    window.importImageData = async function() {
-        showToast('টেবিল থেকে ডাটা আপলোড হচ্ছে...', 'success');
+    // STRICT ONE-TIME IMPORT LOGIC FOR 'boyshuntsacc'
+    async function runOneTimeImport() {
+        const isAlreadyImported = localStorage.getItem("boyshuntsacc_imported");
+        
+        // Stops execution if import was already completed
+        if (isAlreadyImported) {
+            return;
+        }
+
         try {
             const batch = writeBatch(db);
             const currentDateTime = getCurrentDateTime();
-            let addedCount = 0;
 
             imageTableData.forEach(item => {
-                const exists = membersData.some(m => m.name.toLowerCase() === item.name.toLowerCase());
-                if (!exists) {
-                    const newDocRef = doc(membersCol);
-                    batch.set(newDocRef, {
-                        name: item.name,
-                        total: item.total,
-                        status: item.status,
-                        remark: item.remark,
-                        payAmount: 0,
-                        payStatus: item.total <= 0 ? 'paid' : 'due',
-                        note: item.total <= 0 ? '✅ Fully Paid' : `⚠️ Due: ${item.total} ৳`,
-                        date: currentDateTime,
-                        history: [{ date: currentDateTime, log: `অটো হিসাব আপলোড (ছবির টেবিল থেকে): ৳ ${item.total} (${item.status})` }]
-                    });
-                    addedCount++;
-                }
+                const newDocRef = doc(membersCol);
+                batch.set(newDocRef, {
+                    name: item.name,
+                    total: item.total,
+                    status: item.status,
+                    remark: item.remark,
+                    payAmount: 0,
+                    payStatus: item.total <= 0 ? 'paid' : 'due',
+                    note: item.total <= 0 ? '✅ Fully Paid' : `⚠️ Due: ${item.total} ৳`,
+                    date: currentDateTime,
+                    history: [{ date: currentDateTime, log: `প্রথম ইমপোর্ট সেভ করা হয়েছে: ৳ ${item.total} (${item.status})` }]
+                });
             });
 
-            if (addedCount > 0) {
-                await batch.commit();
-                showToast(`সফলভাবে ${addedCount} জনের তথ্য লোড হয়েছে!`, 'success');
-            } else {
-                showToast('সব সদস্যের নাম ও হিসাব আগেই যুক্ত করা রয়েছে।', 'success');
-            }
+            await batch.commit();
+            // Store completion flag locally so it never re-runs
+            localStorage.setItem("boyshuntsacc_imported", "true");
+            showToast('সফলভাবে প্রাথমিক ডাটা ইমপোর্ট সম্পন্ন হয়েছে!', 'success');
         } catch (error) {
-            console.error(error);
-            showToast('ডাটা ইমপোর্ট করতে সমস্যা হয়েছে!', 'warning');
+            console.error("Import error:", error);
         }
-    };
+    }
 
     window.openAddModal = function() {
         resetForm();
@@ -408,9 +393,8 @@
     onSnapshot(membersCol, (snapshot) => {
         membersData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         
-        // Auto Sync on initial empty load
-        if (membersData.length === 0) {
-            importImageData();
+        if (membersData.length === 0 && !localStorage.getItem("boyshuntsacc_imported")) {
+            runOneTimeImport();
         } else {
             renderFeed();
         }

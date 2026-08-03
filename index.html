@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Boys Hunts</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --app-bg: #e6eaf8; 
+            --card-bg: #ffffff;
+            --primary-blue: #2175c4; 
+            --light-blue: #dbeafe;
+            --text-dark: #1e293b;
+            --text-gray: #64748b;
+            --success-color: #10b981;
+            --danger-color: #ef4444; 
+            --danger-light: #fee2e2;
+            --form-save-blue: #4545b6; 
+            --section-title-pink: #ffebec; 
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--app-bg); 
+            margin: 0;
+            padding: 0;
+            color: var(--text-dark);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px 0 30px 0;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            background-color: var(--card-bg); 
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            box-sizing: border-box;
+        }
+
+        .app-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 0 25px 0; 
+        }
+
+        .app-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 22px;
+            font-weight: 800;
+            color: #1e3a8a;
+        }
+
+        .app-icon {
+            background: var(--primary-blue);
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-top {
+            background: var(--primary-blue); 
+            color: #fff;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .btn-import {
+            background: #8b5cf6;
+            color: #fff;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .section-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-gray);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background-color: var(--section-title-pink);
+            padding: 12px;
+            border-radius: 12px 12px 0 0; 
+            text-align: center;
+            justify-content: center;
+        }
+
+        .member-card {
+            background: var(--card-bg);
+            border-radius: 0 0 16px 16px; 
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            border: 1px solid #f1f5f9;
+        }
+        
+        #membersFeed > div:first-child { margin-top: -15px; }
+        #membersFeed > div:first-child .member-card { border-top: none; border-radius: 0 0 16px 16px; }
+
+        .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; }
+        .member-name { font-size: 18px; font-weight: 700; margin-bottom: 8px; color: var(--text-dark); }
+        .badge-month {
+            background: var(--light-blue); color: var(--primary-blue); padding: 4px 12px;
+            border-radius: 20px; font-size: 11px; font-weight: 600; display: inline-block;
+        }
+        .member-amount { font-size: 24px; font-weight: 800; color: var(--danger-color); text-align: right; transition: all 0.3s; }
+
+        .card-body { border-top: 1px dashed #cbd5e1; padding-top: 15px; }
+
+        .balance-overview {
+            display: flex; justify-content: space-between; align-items: center; font-size: 12px; font-weight: 700;
+            background: #f8fafc; padding: 10px 12px; border-radius: 8px; margin-bottom: 12px; border: 1px solid #e2e8f0;
+        }
+
+        .input-group { display: flex; gap: 8px; margin-bottom: 10px; }
+
+        input[type="number"], input[type="text"], select {
+            width: 100%; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 8px;
+            font-size: 14px; outline: none; background: #f8fafc; box-sizing: border-box; font-family: 'Inter', sans-serif;
+        }
+        input:focus:not(:disabled), select:focus:not(:disabled) { border-color: var(--primary-blue); background: #fff; }
+
+        select:disabled {
+            background-color: #e2e8f0;
+            color: #64748b;
+            cursor: not-allowed;
+            border-color: #cbd5e1;
+            font-weight: 600;
+        }
+
+        .note-row { display: flex; justify-content: space-between; font-size: 13px; align-items: center; margin-top: 5px; }
+        .note-text { font-weight: 500; color: var(--text-gray); }
+        .due-alert { color: var(--danger-color); font-weight: 600; }
+        .paid-alert { color: var(--success-color); font-weight: 600; }
+
+        .form-modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5);
+            z-index: 10001; display: none; align-items: center; justify-content: center;
+        }
+
+        .form-section {
+            background: var(--card-bg); padding: 24px; border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15); border: 1px solid #f1f5f9;
+            width: 90%; max-width: 450px; box-sizing: border-box; position: relative;
+        }
+        .form-section h3 { margin-top: 0; font-size: 20px; font-weight: 800; color: #3b3c9b; margin-bottom: 20px; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+        .full-width { grid-column: span 2; }
+        .form-actions { display: flex; gap: 12px; align-items: center; justify-content: space-between; }
+        .btn { padding: 12px 20px; border: none; border-radius: 10px; font-weight: 700; font-size: 15px; cursor: pointer; flex-grow: 1; text-align: center; display: flex; align-items: center; justify-content: center; gap: 8px;}
+        .btn-save { background: #4545b6; color: #fff; } 
+        .btn-clear { background: #fde8e8; color: #ef4444; flex-grow: 0; }
+        
+        .close-form-modal {
+            position: absolute; right: 18px; top: 18px; background: #f1f5f9; color: #64748b;
+            border: none; border-radius: 50%; width: 30px; height: 30px; font-weight: bold; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; font-size: 14px;
+        }
+
+        .card-paid { border-left: 4px solid var(--success-color); }
+        .card-due { border-left: 4px solid var(--danger-color); }
+        
+        .card-paid .member-amount { color: var(--success-color); }
+
+        .dropdown { position: relative; display: inline-block; }
+        .dropbtn { background: transparent; color: var(--text-gray); font-size: 22px; border: none; cursor: pointer; padding: 0 5px; line-height: 1; }
+        .dropdown-content {
+            display: none; position: absolute; right: 0; background-color: white; min-width: 130px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.1); border-radius: 8px; z-index: 1; border: 1px solid #e2e8f0;
+        }
+        .dropdown-content a { color: var(--text-dark); padding: 12px 16px; text-decoration: none; display: block; font-size: 14px; font-weight: 500; }
+        .dropdown-content a:hover { background-color: #f1f5f9; }
+        .dropdown-content.show { display: block; }
+
+        .btn-row-save {
+            background: var(--success-color); color: white; border: none; border-radius: 8px;
+            padding: 0 20px; font-weight: 600; cursor: pointer; font-size: 13px; transition: background 0.2s;
+        }
+        .btn-row-save:hover { background: #059669; }
+
+        .btn-history {
+            background: #e2e8f0; color: #1e293b; border: none; border-radius: 8px;
+            padding: 0 14px; font-size: 16px; cursor: pointer; transition: 0.2s;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .btn-history:hover { background: #cbd5e1; }
+
+        #toast-container {
+            position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 99999;
+            display: flex; flex-direction: column; gap: 10px; width: 90%; max-width: 400px; pointer-events: none;
+        }
+        .toast {
+            padding: 12px 20px; border-radius: 8px; color: white; font-weight: 600; font-size: 14px;
+            text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.15);
+            animation: slideDown 0.3s ease-out forwards, fadeOut 0.3s ease-out 2.7s forwards;
+        }
+        .toast.success { background-color: var(--success-color); }
+        .toast.warning { background-color: var(--danger-color); }
+        @keyframes slideDown { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
+
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6);
+            z-index: 10000; display: none; align-items: center; justify-content: center;
+        }
+        .modal-box {
+            background: #fff; width: 90%; max-width: 400px; border-radius: 16px; padding: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2); max-height: 80vh; display: flex; flex-direction: column;
+        }
+        .modal-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 15px; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;
+        }
+        .modal-title { font-size: 16px; font-weight: 700; color: #1e3a8a; }
+        .close-modal {
+            background: #fee2e2; color: #ef4444; border: none; border-radius: 50%;
+            width: 28px; height: 28px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center;
+        }
+        .history-list { overflow-y: auto; list-style: none; padding: 0; margin: 0; }
+        .history-item { padding: 12px 0; border-bottom: 1px dashed #cbd5e1; display: flex; flex-direction: column; }
+        .history-item:last-child { border-bottom: none; }
+        .history-date { font-size: 11px; color: var(--text-gray); margin-bottom: 4px; font-weight: 600;}
+        .history-log { font-size: 14px; font-weight: 700; color: var(--text-dark); }
+        .history-note { font-size: 13px; color: var(--primary-blue); font-style: italic; margin-top: 4px; }
+    </style>
+</head>
+<body>
+
+<div id="toast-container"></div>
+
+<!-- History Modal -->
+<div class="modal-overlay" id="historyModal">
+    <div class="modal-box">
+        <div class="modal-header">
+            <div class="modal-title">📜 Transaction History</div>
+            <button class="close-modal" onclick="closeHistory()">✕</button>
+        </div>
+        <ul class="history-list" id="historyContent"></ul>
+    </div>
+</div>
+
+<!-- Add/Edit Modal -->
+<div class="form-modal-overlay" id="formModal">
+    <div class="form-section">
+        <button class="close-form-modal" onclick="closeFormModal()">✕</button>
+        <h3 id="formTitle">New Member entry</h3>
+        <input type="hidden" id="editDocId" value="">
+        <div class="form-grid">
+            <input type="text" class="full-width" id="newName" placeholder="Name" required>
+            <input type="number" id="newTotal" placeholder="Total Amount (৳)" step="0.01" required>
+            <select id="newStatus"><option value="পাবে">পাবে</option><option value="দিবে">দিবে</option></select>
+            <input type="text" class="full-width" id="newRemark" placeholder="Remark (Optional)">
+        </div>
+        <div class="form-actions">
+            <button class="btn btn-save" onclick="saveEntry()">Save Data</button>
+            <button class="btn btn-clear" onclick="clearAllData()">Clear All</button>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="app-header">
+        <div class="app-title"><div class="app-icon">🍴</div>Boys Hunts</div>
+        <div class="header-actions">
+            <button class="btn-import" onclick="importImageData()" title="ছবির ডাটা অটো ইমপোর্ট">📥 Import Table Data</button>
+            <button class="btn-top" onclick="openAddModal()">Add Member</button>
+        </div>
+    </div>
+
+    <div class="section-title">MEMBERS PAYMENT LIST</div>
+    <div id="membersFeed"></div>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, collection, onSnapshot, doc, setDoc, updateDoc, deleteDoc, writeBatch } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    // Main Firebase Database Configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyC1wWWOu84tOHd1s5HhBrkGv5c1P2UqlqA",
+        authDomain: "boyshunts.firebaseapp.com",
+        databaseURL: "https://boyshunts-default-rtdb.firebaseio.com",
+        projectId: "boyshunts",
+        storageBucket: "boyshunts.firebasestorage.app",
+        messagingSenderId: "614876875448",
+        appId: "1:614876875448:web:b6d187fe1b5fd905bc024d",
+        measurementId: "G-H3CFH5LFLJ"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const membersCol = collection(db, "members");
+
+    let membersData = [];
+
+    // Exact Table Data Extracted From The Provided Image
+    const imageTableData = [
+        { name: "Bosir", total: 39.52, status: "পাবে", remark: "Mill Cost: 1710.48 | Bazar: 2630" },
+        { name: "Nadim", total: 2796.41, status: "দিবে", remark: "Mill Cost: 5041.41 | Bazar: 3125" },
+        { name: "Noman", total: 1321.03, status: "দিবে", remark: "Mill Cost: 3691.03 | Bazar: 3250" },
+        { name: "Robi", total: 414.50, status: "পাবে", remark: "Mill Cost: 1800.5 | Bazar: 3095" },
+        { name: "Sadik", total: 710.75, status: "দিবে", remark: "Mill Cost: 2700.75 | Bazar: 2870" },
+        { name: "Tanjil", total: 905.83, status: "দিবে", remark: "Mill Cost: 2970.83 | Bazar: 2945" }
+    ];
+
+    function getCurrentDateTime() {
+        const now = new Date();
+        let hours = now.getHours();
+        let minutes = now.getMinutes();
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12; hours = hours ? hours : 12; 
+        minutes = minutes < 10 ? '0' + minutes : minutes;
+        const strTime = hours + ':' + minutes + ' ' + ampm;
+        const day = now.getDate();
+        const month = now.toLocaleString('default', { month: 'short' });
+        const year = now.getFullYear();
+        return `${day} ${month} ${year}, ${strTime}`;
+    }
+
+    function showToast(message, type = 'success') {
+        const container = document.getElementById('toast-container');
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        toast.innerHTML = `${type === 'success' ? '✅' : '⚠️'} ${message}`;
+        container.appendChild(toast);
+        setTimeout(() => { if (toast.parentNode) toast.parentNode.removeChild(toast); }, 3000);
+    }
+
+    // Function to auto-populate members data from the image table
+    window.importImageData = async function() {
+        showToast('টেবিল থেকে ডাটা আপলোড হচ্ছে...', 'success');
+        try {
+            const batch = writeBatch(db);
+            const currentDateTime = getCurrentDateTime();
+            let addedCount = 0;
+
+            imageTableData.forEach(item => {
+                const exists = membersData.some(m => m.name.toLowerCase() === item.name.toLowerCase());
+                if (!exists) {
+                    const newDocRef = doc(membersCol);
+                    batch.set(newDocRef, {
+                        name: item.name,
+                        total: item.total,
+                        status: item.status,
+                        remark: item.remark,
+                        payAmount: 0,
+                        payStatus: item.total <= 0 ? 'paid' : 'due',
+                        note: item.total <= 0 ? '✅ Fully Paid' : `⚠️ Due: ${item.total} ৳`,
+                        date: currentDateTime,
+                        history: [{ date: currentDateTime, log: `অটো হিসাব আপলোড (ছবির টেবিল থেকে): ৳ ${item.total} (${item.status})` }]
+                    });
+                    addedCount++;
+                }
+            });
+
+            if (addedCount > 0) {
+                await batch.commit();
+                showToast(`সফলভাবে ${addedCount} জনের তথ্য লোড হয়েছে!`, 'success');
+            } else {
+                showToast('সব সদস্যের নাম ও হিসাব আগেই যুক্ত করা রয়েছে।', 'success');
+            }
+        } catch (error) {
+            console.error(error);
+            showToast('ডাটা ইমপোর্ট করতে সমস্যা হয়েছে!', 'warning');
+        }
+    };
+
+    window.openAddModal = function() {
+        resetForm();
+        document.getElementById('formModal').style.display = 'flex';
+    };
+
+    window.closeFormModal = function() {
+        document.getElementById('formModal').style.display = 'none';
+    };
+
+    // Realtime Database Listener
+    onSnapshot(membersCol, (snapshot) => {
+        membersData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        
+        // Auto Sync on initial empty load
+        if (membersData.length === 0) {
+            importImageData();
+        } else {
+            renderFeed();
+        }
+    });
+
+    function renderFeed() {
+        const feed = document.getElementById('membersFeed');
+        feed.innerHTML = '';
+
+        membersData.forEach((member, index) => {
+            let cardStatusClass = member.payStatus === 'paid' ? 'card-paid' : 'card-due';
+            let autoNoteClass = member.payStatus === 'paid' ? 'paid-alert' : 'due-alert';
+            let displayDate = member.date ? member.date : new Date().toLocaleString('default', { month: 'long', year: 'numeric' });
+
+            if(index === 0) {
+                 const firstCardVisualWrapper = document.createElement('div');
+                 firstCardVisualWrapper.innerHTML = `<div class="visual-header-card-connector" style="position:relative; z-index:-1; margin-bottom: -1px; height:20px; background:var(--section-title-pink); border-radius: 0 0 12px 12px; border-bottom: 1px solid #f1f5f9;"></div>`;
+                 feed.appendChild(firstCardVisualWrapper);
+            }
+            
+            let totalAmt = parseFloat(member.total) || 0;
+            let dueAmount = totalAmt;
+            if (member.payStatus === 'paid' || dueAmount <= 0) dueAmount = 0;
+            let displayDue = Number(dueAmount.toFixed(2));
+
+            const card = document.createElement('div');
+            card.className = `member-card ${cardStatusClass}`;
+            card.id = `card_${index}`;
+            
+            card.innerHTML = `
+                <div class="card-header">
+                    <div>
+                        <div class="member-name">${member.name}</div>
+                        <div class="badge-month" id="badge_${index}">${member.status} • ${displayDate}</div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <div class="member-amount" id="total_amount_${index}">৳ ${displayDue}</div>
+                        <div class="dropdown">
+                            <button class="dropbtn" onclick="toggleMenu('${member.id}')">⋮</button>
+                            <div class="dropdown-content" id="menu_${member.id}">
+                                <a href="javascript:void(0)" onclick="editEntry('${member.id}')">✏️ Edit</a>
+                                <a href="javascript:void(0)" onclick="deleteEntry('${member.id}')" style="color: var(--danger-color);">🗑️ Delete</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card-body">
+                    <div class="balance-overview">
+                        <div style="color: var(--primary-blue);">Main Total: ৳ <span id="overview_total_${index}">${member.total}</span></div>
+                        <div style="text-align: right;">
+                            <div style="color: var(--success-color); margin-bottom: 4px;">Paid: ৳ <span id="overview_paid_${index}">${member.payAmount || 0}</span></div>
+                            <div style="color: var(--danger-color);">Due: ৳ <span id="overview_due_${index}">${displayDue}</span></div>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <input type="text" id="amount_${index}" placeholder="Enter Amount">
+                        <select id="status_${index}" disabled style="width: 100px; padding: 10px 8px; text-align: center;">
+                            <option value="due" ${member.payStatus === 'due' ? 'selected' : ''}>Due</option>
+                            <option value="paid" ${member.payStatus === 'paid' ? 'selected' : ''}>Paid</option>
+                        </select>
+                        <button class="btn-history" onclick="openHistory(${index})" title="History">📜</button>
+                    </div>
+
+                    <div class="input-group">
+                        <input type="text" id="txn_remark_${index}" placeholder="Transaction note">
+                        <button class="btn-row-save" id="btn_save_${index}" onclick="saveRowPayment(${index})">Save</button>
+                    </div>
+                    
+                    <div class="note-row">
+                        <span class="note-text">${member.remark ? 'Remark: ' + member.remark : ''}</span>
+                        <span class="auto-note ${autoNoteClass}" id="note_${index}">${member.note || '⚠️ Unpaid'}</span>
+                    </div>
+                </div>
+            `;
+            feed.appendChild(card);
+        });
+    }
+
+    window.saveRowPayment = async function(index) {
+        const amountInputStr = document.getElementById(`amount_${index}`).value.trim();
+        const txnRemark = document.getElementById(`txn_remark_${index}`).value.trim();
+        
+        let member = membersData[index];
+        let historyArr = [...(member.history || [])];
+        
+        let currentTotal = parseFloat(member.total) || 0;
+        let currentPaid = parseFloat(member.payAmount) || 0;
+        let historyLog = '';
+        let theDate = getCurrentDateTime();
+        let noteHtml = txnRemark ? `<div class="history-note">Note: ${txnRemark}</div>` : '';
+
+        if (amountInputStr === "") {
+            showToast('দয়া করে টাকার পরিমাণ লিখুন!', 'warning');
+            return;
+        }
+
+        let updatedTotal = currentTotal;
+        let updatedPaid = currentPaid;
+
+        if (amountInputStr.startsWith('+')) {
+            let addAmt = parseFloat(amountInputStr.substring(1));
+            if(!isNaN(addAmt) && addAmt > 0){
+                updatedTotal = Number((currentTotal + addAmt).toFixed(2));
+                historyLog = `নতুন টাকা যোগ করা হয়েছে (+${addAmt} ৳)${noteHtml}`;
+                showToast(`৳ ${addAmt} মেইন ব্যালেন্সে যোগ হয়েছে!`, 'success');
+            }
+        } else if (amountInputStr.startsWith('-')) {
+            let payAmt = parseFloat(amountInputStr.substring(1));
+            if(!isNaN(payAmt) && payAmt > 0){
+                updatedTotal = Number((currentTotal - payAmt).toFixed(2));
+                if(updatedTotal < 0) updatedTotal = 0;
+                updatedPaid = Number((currentPaid + payAmt).toFixed(2));
+                historyLog = `পেমেন্ট গ্রহণ করা হয়েছে (-${payAmt} ৳)${noteHtml}`;
+                showToast(`৳ ${payAmt} পেমেন্ট গ্রহণ করা হয়েছে!`, 'success');
+            }
+        } else {
+            let payAmt = parseFloat(amountInputStr);
+            if (!isNaN(payAmt) && payAmt > 0) {
+                updatedTotal = Number((currentTotal - payAmt).toFixed(2));
+                if(updatedTotal < 0) updatedTotal = 0;
+                updatedPaid = Number((currentPaid + payAmt).toFixed(2));
+                historyLog = `পেমেন্ট গ্রহণ করা হয়েছে (-${payAmt} ৳)${noteHtml}`;
+                showToast(`৳ ${payAmt} পেমেন্ট গ্রহণ করা হয়েছে!`, 'success');
+            }
+        }
+
+        if (historyLog !== '') {
+            historyArr.unshift({ date: theDate, log: historyLog });
+        }
+
+        let payStatus = updatedTotal <= 0 ? 'paid' : 'due';
+        let note = updatedTotal <= 0 ? '✅ Fully Paid' : `⚠️ Due: ${Number(updatedTotal.toFixed(2))} ৳`;
+
+        try {
+            const docRef = doc(db, "members", member.id);
+            await updateDoc(docRef, {
+                total: updatedTotal,
+                payAmount: updatedPaid,
+                history: historyArr,
+                payStatus: payStatus,
+                note: note,
+                date: theDate
+            });
+            document.getElementById(`amount_${index}`).value = '';
+            document.getElementById(`txn_remark_${index}`).value = '';
+        } catch (e) {
+            showToast('ডাটা আপডেট করতে সমস্যা হয়েছে!', 'warning');
+            console.error(e);
+        }
+    };
+
+    window.openHistory = function(index) {
+        const member = membersData[index];
+        const content = document.getElementById('historyContent');
+        content.innerHTML = '';
+
+        if (!member.history || member.history.length === 0) {
+            content.innerHTML = '<li class="history-item" style="text-align:center; color:#64748b;">কোনো হিস্ট্রি পাওয়া যায়নি।</li>';
+        } else {
+            member.history.forEach(item => {
+                content.innerHTML += `
+                    <li class="history-item">
+                        <div class="history-date">${item.date}</div>
+                        <div class="history-log">${item.log}</div>
+                    </li>
+                `;
+            });
+        }
+        document.getElementById('historyModal').style.display = 'flex';
+    };
+
+    window.closeHistory = function() {
+        document.getElementById('historyModal').style.display = 'none';
+    };
+
+    window.toggleMenu = function(docId) { 
+        document.getElementById(`menu_${docId}`).classList.toggle("show"); 
+    };
+
+    window.onclick = function(event) {
+        if (!event.target.matches('.dropbtn')) {
+            let dropdowns = document.getElementsByClassName("dropdown-content");
+            for (let i = 0; i < dropdowns.length; i++) {
+                if (dropdowns[i].classList.contains('show')) dropdowns[i].classList.remove('show');
+            }
+        }
+        const historyModal = document.getElementById('historyModal');
+        if (event.target == historyModal) { historyModal.style.display = "none"; }
+        
+        const formModal = document.getElementById('formModal');
+        if (event.target == formModal) { formModal.style.display = "none"; }
+    };
+
+    window.saveEntry = async function() {
+        const docId = document.getElementById('editDocId').value;
+        const newName = document.getElementById('newName').value.trim();
+        const newTotal = document.getElementById('newTotal').value.trim();
+        const newStatus = document.getElementById('newStatus').value;
+        const newRemark = document.getElementById('newRemark').value.trim();
+
+        if(!newName || !newTotal) { alert("দয়া করে নাম এবং Total Amount লিখুন!"); return; }
+        const currentDateTime = getCurrentDateTime();
+        let initialTotal = parseFloat(newTotal) || 0;
+
+        try {
+            if (docId) {
+                const targetMember = membersData.find(m => m.id === docId);
+                let payStatus = initialTotal <= 0 ? 'paid' : 'due';
+                let note = initialTotal <= 0 ? '✅ Fully Paid' : `⚠️ Due: ${Number(initialTotal.toFixed(2))} ৳`;
+                let historyArr = [...(targetMember.history || [])];
+                historyArr.unshift({ date: currentDateTime, log: 'এন্ট্রি ম্যানুয়ালি আপডেট করা হয়েছে' });
+
+                await updateDoc(doc(db, "members", docId), {
+                    name: newName,
+                    total: initialTotal,
+                    status: newStatus,
+                    remark: newRemark,
+                    payStatus: payStatus,
+                    note: note,
+                    date: currentDateTime,
+                    history: historyArr
+                });
+                showToast('হিসাব সফলভাবে আপডেট করা হয়েছে!', 'success');
+            } else {
+                const newDocRef = doc(membersCol);
+                await setDoc(newDocRef, {
+                    name: newName, 
+                    total: initialTotal, 
+                    status: newStatus, 
+                    remark: newRemark, 
+                    payAmount: 0,
+                    payStatus: initialTotal <= 0 ? 'paid' : 'due', 
+                    note: initialTotal <= 0 ? '✅ Fully Paid' : `⚠️ Due: ${initialTotal} ৳`, 
+                    date: currentDateTime,
+                    history: [{ date: currentDateTime, log: `নতুন হিসাব তৈরি: ৳ ${newTotal}` }]
+                });
+                showToast('নতুন হিসাব সফলভাবে যোগ করা হয়েছে!', 'success');
+            }
+            resetForm(); 
+            closeFormModal();
+        } catch (error) {
+            console.error(error);
+            showToast('ডাটা সেভ করতে সমস্যা হয়েছে!', 'warning');
+        }
+    };
+
+    window.editEntry = function(docId) {
+        const member = membersData.find(m => m.id === docId);
+        if(!member) return;
+        document.getElementById('newName').value = member.name;
+        document.getElementById('newTotal').value = member.total;
+        document.getElementById('newStatus').value = member.status;
+        document.getElementById('newRemark').value = member.remark || '';
+        document.getElementById('editDocId').value = docId;
+        document.getElementById('formTitle').innerText = "Edit Member entry";
+        document.getElementById('formModal').style.display = 'flex';
+    };
+
+    window.deleteEntry = async function(docId) {
+        if (confirm('আপনি কি নিশ্চিতভাবে এই এন্ট্রিটি ডিলিট করতে চান?')) {
+            try {
+                await deleteDoc(doc(db, "members", docId));
+                showToast('ডাটা সফলভাবে মুছে ফেলা হয়েছে!', 'warning');
+            } catch (error) {
+                console.error(error);
+                showToast('ডাটা ডিলিট করতে সমস্যা হয়েছে!', 'warning');
+            }
+        }
+    };
+
+    window.clearAllData = async function() {
+        if (confirm('আপনি কি সব ডাটা মুছে ফেলতে চান? এটি আর ফিরিয়ে আনা যাবে না!')) {
+            try {
+                const batch = writeBatch(db);
+                membersData.forEach(member => {
+                    batch.delete(doc(db, "members", member.id));
+                });
+                await batch.commit();
+                closeFormModal(); 
+                showToast('সকল ডাটা মুছে ফেলা হয়েছে!', 'warning');
+            } catch (error) {
+                console.error(error);
+                showToast('ডাটা ক্লিয়ার করতে সমস্যা হয়েছে!', 'warning');
+            }
+        }
+    };
+
+    function resetForm() {
+        document.getElementById('newName').value = ''; 
+        document.getElementById('newTotal').value = '';
+        document.getElementById('newStatus').value = 'পাবে'; 
+        document.getElementById('newRemark').value = '';
+        document.getElementById('editDocId').value = ''; 
+        document.getElementById('formTitle').innerText = "New Member entry";
+    }
+</script>
+
+</body>
+</html>
